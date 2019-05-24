@@ -1,6 +1,5 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.Properties;
 
 public class jdbcTemplate {
 
@@ -9,10 +8,35 @@ public class jdbcTemplate {
 
     Class.forName("com.mysql.jdbc.Driver"); 
 
-    Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=minikube&password=minikube");
+    String url = "jdbc:mysql://localhost:3306/registrations";
+    Properties info = new Properties();
+    info.put("user", "registrar");
+    info.put("password", "registrar");
+    //info.put("database", "registrations");
+    
+    //Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/?user=registrar&password=registrar");
+    Connection conn = DriverManager.getConnection(url, info);
     Statement s = conn.createStatement();
 
-    int result = s.executeUpdate("create database jdbcdb");
-    System.out.println("database created with status " + result);
+    ResultSet res = s.executeQuery("select * from bindings");
+    while(res.next()) {
+      System.out.println("row: %s" + res.getString("address_of_record"));
+    }
+
+    conn.close();
+/*
+    try {
+      String sql = "select * from bindings";
+      ResultSet rs = conn.createStatement().executeQuery(sql);
+      while(rs.next()) {
+        System.out.println("row: %s" + rs.getString("address_of_record"));
+      }
+    } catch (SQLException ex) {
+      JDBCTutorialUtilities.printSQLException(e);
+    } finally {
+      if (s != null) { s.close(); }
+    }
+*/
+    System.out.println("Bye Bye");
   }
 }
